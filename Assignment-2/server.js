@@ -44,7 +44,6 @@ app.get('/lego/sets/theme-demo', (req, res) => {
           res.json(sets);
       })
       .catch((error) => {
-          console.error('Error:', error); // Log any errors
           res.status(404).send('Unable to find requested sets');
       });
 });
