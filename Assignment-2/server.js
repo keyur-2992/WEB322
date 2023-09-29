@@ -1,67 +1,58 @@
-/********************************************************************************
-*  WEB322 – Assignment 02
-* 
-*  I declare that this assignment is my own work in accordance with Seneca's
-*  Academic Integrity Policy:
-* 
-*  https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
-* 
-*  Name: keyurkumar Patel    Student ID: 170852214       Date: 25-SEP-2023
-*
-********************************************************************************/
-
-const express = require("express");
+const express = require('express');
 const app = express();
+const legoData = require('./modules/legoSets');
 
-//const legoData = require("../modules/legoSets");
+// Initialize Lego data
+legoData.initialize()
+    .then(() => {
+        console.log('Lego data initialized successfully.');
+    })
+    .catch((error) => {
+        console.error('Error initializing Lego data:', error);
+    });
 
+// Routes
+app.get('/', (req, res) => {
+    res.send('Assignment 2: Keyurkumar Patel - 170852214');
+});
 
-// Import your legoSets module
-const legoSets = require("./modules/legoSets"); // Adjust the path as needed
+app.get('/lego/sets', (req, res) => {
+    legoData.getAllSets()
+        .then((sets) => {
+            res.json(sets);
+        })
+        .catch((error) => {
+            res.status(500).send('Internal Server Error');
+        });
+});
 
-// Initialize the legoSets data
-legoSets.initialize().then(() => {
-  // GET "/"
-  app.get("/", (req, res) => {
-    const studentInfo = "keyurkumar Patel - 170852214"; // Replace with your name and student ID
-    res.send(`Assignment 2: ${studentInfo}`);
-  });
+app.get('/lego/sets/num-demo', (req, res) => {
+    const setNum = '03093-1'; // Replace with a valid set number from your data set
+    legoData.getSetByNum(setNum)
+        .then((set) => {
+            res.json(set);
+        })
+        .catch((error) => {
+            res.status(404).send('Unable to find requested set');
+        });
+});
 
-  // GET "/lego/sets"
-  app.get("/lego/sets", (req, res) => {
-    const allSets = legoSets.getAllSets();
-    res.json(allSets);
-  });
-
-  // GET "/lego/sets/num-demo"
-  app.get("/lego/sets/num-demo", (req, res) => {
-    const setNum = "001-1"; // Replace with a known setNum value from your data set
-    legoSets
-      .getSetByNum(setNum)
-      .then((set) => {
-        res.json(set);
-      })
-      .catch((error) => {
-        res.status(404).send("Error: " + error);
-      });
-  });
-
-  // GET "/lego/sets/theme-demo"
-  app.get("/lego/sets/theme-demo", (req, res) => {
-    const theme = "tech"; // Replace with a known theme value from your data set (lowercase)
-    legoSets
-      .getSetsByTheme(theme)
+app.get('/lego/sets/theme-demo', (req, res) => {
+  const theme = 'basic'; // Replace with a valid theme from your data set
+  legoData.getSetsByTheme(theme)
       .then((sets) => {
-        res.json(sets);
+          res.json(sets);
       })
       .catch((error) => {
-        res.status(404).send("Error: " + error);
+          console.error('Error:', error); // Log any errors
+          res.status(404).send('Unable to find requested sets');
       });
-  });
+});
 
-  // Start the server
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => {
+
+
+// Start server
+const PORT = 3000;
+app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-  });
 });
