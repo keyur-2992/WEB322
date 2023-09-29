@@ -1,3 +1,17 @@
+/********************************************************************************
+*  WEB322 – Assignment 02
+* 
+*  I declare that this assignment is my own work in accordance with Seneca's
+*  Academic Integrity Policy:
+* 
+*  https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
+* 
+*  Name: Keyurkumar Patel Student ID: 170852214 Date: 28-SEP-2023
+*
+********************************************************************************/
+
+
+
 const express = require('express');
 const app = express();
 const legoData = require('./modules/legoSets');
